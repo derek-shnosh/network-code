@@ -1,11 +1,11 @@
 #!/bin/env python
 # Author: DS, Synergy Information Solutions, Inc.
 
-# Make sure guestshell is enabled on the NX-OS device.
-# Copy this script to bootflash:/scripts/nxos-cdp-brief.py
-# Create a command alias on NX-OS CLI;
-# `cli alias name cdpbr guestshell run python /bootflash/scripts/nxos-cdp-brief.py`
-# Typing `cdpbr` in NX-OS CLI will how print a useful CDP brief table.
+# 1. Make sure guestshell is enabled on the NX-OS device.
+# 2. Copy this script to bootflash:/scripts/nxos-cdp-brief.py
+# 3. Create a command alias on NX-OS CLI;
+#    - `cli alias name cdpbr guestshell run python /bootflash/scripts/nxos-cdp-brief.py`
+# 4. Typing `cdpbr` in NX-OS CLI will print a useful CDP brief table.
 
 import cli
 import json
