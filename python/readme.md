@@ -10,8 +10,8 @@ One line is printed per CDP neighbor, containing the following information;
 
 ### Usage
 
-1. Make sure guestshell is enabled on the NX-OS device.
+1. Enable guestshell on the NX-OS device.
 2. Copy this script to bootflash:/scripts/nxos-cdp-brief.py
 3. Create a command alias on NX-OS CLI;
    - `cli alias name cdpbr guestshell run python /bootflash/scripts/nxos-cdp-brief.py`
-4. Typing `cdpbr` in NX-OS CLI will print a useful CDP brief table.
+4. Type `cdpbr` in NX-OS CLI to output a useful CDP brief table.
