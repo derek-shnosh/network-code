@@ -9,15 +9,15 @@
 #    - `cli alias name cdpbr guestshell run python /bootflash/scripts/nxos-cdp-brief.py`
 # 5. Type `cdpbr` in NX-OS CLI to output a useful CDP brief table.
 
-import cli
 import json
 import re
+from cli import clid
 from natsort import natsorted
 
 cdp_dict = {}
 i = 0
 
-cdp = json.loads(cli.clid('show cdp neighbor detail'))[
+cdp = json.loads(clid('show cdp neighbor detail'))[
     'TABLE_cdp_neighbor_detail_info']['ROW_cdp_neighbor_detail_info']
 
 for entry in cdp:
