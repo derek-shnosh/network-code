@@ -2,15 +2,17 @@
 # Author: DS, Synergy Information Solutions, Inc.
 
 # 1. Enable guestshell on the NX-OS device.
-# 2. Copy this script to bootflash:/scripts/nxos-cdp-brief.py
-# 3. Create a command alias on NX-OS CLI;
+# 2. Install the natsort python module via guestshell;
+#    - `sudo chvrf management pip install natsort`
+# 3. Copy this script to bootflash:/scripts/nxos-cdp-brief.py
+# 4. Create a command alias on NX-OS CLI;
 #    - `cli alias name cdpbr guestshell run python /bootflash/scripts/nxos-cdp-brief.py`
-# 4. Type `cdpbr` in NX-OS CLI to output a useful CDP brief table.
+# 5. Type `cdpbr` in NX-OS CLI to output a useful CDP brief table.
 
 import cli
 import json
 import re
-import natsort
+from natsort import natsorted
 
 cdp_dict = {}
 i = 0
@@ -51,11 +53,13 @@ for entry in cdp:
 # Print header and custom CDP neighbor brief table.
 print('''CDP brief prints useful CDP neighbor information.
 
+* Use `| grep` to filter output.
+
 'L-Intf' denotes local interface.
 'N-Intf' denotes neighbor interface.
 
 %-8s -> %-20s %-12s %s\n%s''' % ('L-Intf', 'Neighbor', 'N-Intf', 'IP Address', '-'*60))
 
-for key, value in natsort.natsorted(cdp_dict.items()):
+for key, value in natsorted(cdp_dict.items()):
     print('%-8s -> %-20s %-12s %s' %
           (value['local_intf'], value['neighbor'], value['neighbor_intf'], value['neighbor_ip']))
