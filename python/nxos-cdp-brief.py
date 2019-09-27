@@ -6,7 +6,8 @@
 #    - `sudo chvrf management pip install natsort`
 # 3. Copy this script to bootflash:/scripts/nxos-cdp-brief.py
 # 4. Create a command alias on NX-OS CLI;
-#    - `cli alias name cdpbr guestshell run python /bootflash/scripts/nxos-cdp-brief.py`
+#    - With guestshell: `cli alias name cdpbr guestshell run python /bootflash/scripts/nxos-cdp-brief.py`
+#    - Without guestshell: `cli alias name cdpbr python /bootflash/scripts/nxos-cdp-brief.py`
 # 5. Type `cdpbr` in NX-OS CLI to output a useful CDP brief table.
 
 import json
@@ -46,8 +47,7 @@ for entry in cdp:
     cdp_dict[interface, i]['neighbor'] = neighbor
 
     # Strip fat from neighbor interface, add to dict.
-    neighbor_intf = re.sub(
-        r'^(.{3})[^\d]*([\d/]+)', r'\1 \2', entry['port_id'])
+    neighbor_intf = re.sub(r'^(.{3})[^\d]*([\d/]+)', r'\1 \2', entry['port_id'])
     cdp_dict[interface, i]['neighbor_intf'] = neighbor_intf
 
     # Add neighbor IP address to dict.
@@ -76,8 +76,8 @@ print('''CDP brief prints useful CDP neighbor information.
 if natsorted_avail:
     for key, value in natsorted(cdp_dict.items()):
         print('%-8s -> %-20s %-12s %s' %
-              (value['local_intf'], value['neighbor'], value['neighbor_intf'], value['neighbor_ip']))
+            (value['local_intf'], value['neighbor'], value['neighbor_intf'], value['neighbor_ip']))
 else:
     for key, value in cdp_dict.items():
         print('%-8s -> %-20s %-12s %s' %
-              (value['local_intf'], value['neighbor'], value['neighbor_intf'], value['neighbor_ip']))
+            (value['local_intf'], value['neighbor'], value['neighbor_intf'], value['neighbor_ip']))

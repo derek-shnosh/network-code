@@ -10,10 +10,11 @@ One line is printed per CDP neighbor, containing the following information;
 
 ### Usage
 
-1. Enable guestshell on the NX-OS device.
-2. Install the natsort python module via guestshell;
+1. Enable guestshell on the NX-OS device (optional).
+2. Install the natsort python module via guestshell (optional);
    - `sudo chvrf management pip install natsort`
 3. Copy this script to bootflash:/scripts/nxos-cdp-brief.py
 4. Create a command alias on NX-OS CLI;
-   - `cli alias name cdpbr guestshell run python /bootflash/scripts/nxos-cdp-brief.py`
+   - With guestshell: `cli alias name cdpbr guestshell run python /bootflash/scripts/nxos-cdp-brief.py`
+   - Without guestshell: `cli alias name cdpbr python /bootflash/scripts/nxos-cdp-brief.py`
 5. Type `cdpbr` in NX-OS CLI to output a useful CDP brief table.
