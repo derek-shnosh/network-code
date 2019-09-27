@@ -24,8 +24,12 @@ cdp = []
 cdp_dict = {}
 i = 0
 
-return_data = json.loads(clid('show cdp neighbor detail'))[
+try:
+    return_data = json.loads(clid('show cdp neighbor detail'))[
     'TABLE_cdp_neighbor_detail_info']['ROW_cdp_neighbor_detail_info']
+except:
+    print('No CDP neighbors found.')
+    exit()
 
 if isinstance(return_data, dict):
     cdp.append(return_data)
@@ -76,8 +80,8 @@ print('''CDP brief prints useful CDP neighbor information.
 if natsorted_avail:
     for key, value in natsorted(cdp_dict.items()):
         print('%-8s -> %-20s %-12s %s' %
-            (value['local_intf'], value['neighbor'], value['neighbor_intf'], value['neighbor_ip']))
+              (value['local_intf'], value['neighbor'], value['neighbor_intf'], value['neighbor_ip']))
 else:
     for key, value in cdp_dict.items():
         print('%-8s -> %-20s %-12s %s' %
-            (value['local_intf'], value['neighbor'], value['neighbor_intf'], value['neighbor_ip']))
+              (value['local_intf'], value['neighbor'], value['neighbor_intf'], value['neighbor_ip']))
