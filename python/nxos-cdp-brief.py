@@ -12,13 +12,25 @@
 import json
 import re
 from cli import clid
-from natsort import natsorted
 
+try:
+    from natsort import natsorted
+    natsorted_avail = True
+except ImportError:
+    natsorted_avail = False
+
+cdp = []
 cdp_dict = {}
 i = 0
 
-cdp = json.loads(clid('show cdp neighbor detail'))[
+return_data = json.loads(clid('show cdp neighbor detail'))[
     'TABLE_cdp_neighbor_detail_info']['ROW_cdp_neighbor_detail_info']
+
+if isinstance(return_data, dict):
+    cdp.append(return_data)
+elif isinstance(return_data, list):
+    for item in return_data:
+        cdp.append(item)
 
 for entry in cdp:
     i += 1
@@ -34,7 +46,8 @@ for entry in cdp:
     cdp_dict[interface, i]['neighbor'] = neighbor
 
     # Strip fat from neighbor interface, add to dict.
-    neighbor_intf = re.sub(r'^(.{3})[^\d]*([\d/]+)', r'\1 \2', entry['port_id'])
+    neighbor_intf = re.sub(
+        r'^(.{3})[^\d]*([\d/]+)', r'\1 \2', entry['port_id'])
     cdp_dict[interface, i]['neighbor_intf'] = neighbor_intf
 
     # Add neighbor IP address to dict.
@@ -60,6 +73,11 @@ print('''CDP brief prints useful CDP neighbor information.
 
 %-8s -> %-20s %-12s %s\n%s''' % ('L-Intf', 'Neighbor', 'N-Intf', 'IP Address', '-'*60))
 
-for key, value in natsorted(cdp_dict.items()):
-    print('%-8s -> %-20s %-12s %s' %
-          (value['local_intf'], value['neighbor'], value['neighbor_intf'], value['neighbor_ip']))
+if natsorted_avail:
+    for key, value in natsorted(cdp_dict.items()):
+        print('%-8s -> %-20s %-12s %s' %
+              (value['local_intf'], value['neighbor'], value['neighbor_intf'], value['neighbor_ip']))
+else:
+    for key, value in cdp_dict.items():
+        print('%-8s -> %-20s %-12s %s' %
+              (value['local_intf'], value['neighbor'], value['neighbor_intf'], value['neighbor_ip']))
