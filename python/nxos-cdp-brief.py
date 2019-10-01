@@ -71,12 +71,16 @@ print('''CDP brief prints useful CDP neighbor information.
 'L-Intf' denotes local interface.
 'N-Intf' denotes neighbor interface.
 
-%-8s -> %-20s %-12s %s\n%s''' % ('L-Intf', 'Neighbor', 'N-Intf', 'IP Address', '-'*60))
+%-8s -> %-20s %-12s %s\n%s''' %
+      ('L-Intf', 'Neighbor', 'N-Intf', 'IP Address', '-'*60))
 
 if natsorted_avail:
     for key, value in natsorted(cdp_dict.items()):
         print('%-8s -> %-20s %-12s %s' %
-              (value['local_intf'], value['neighbor'], value['neighbor_intf'], value['neighbor_ip']))
+              (value['local_intf'],
+               value['neighbor'],
+               value['neighbor_intf'],
+               value['neighbor_ip']))
 else:
     sorted_neighbors = sorted(cdp_dict.keys())
     for nei in sorted_neighbors:
