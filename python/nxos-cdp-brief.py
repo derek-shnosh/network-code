@@ -26,7 +26,7 @@ i = 0
 
 try:
     return_data = json.loads(clid('show cdp neighbor detail'))[
-    'TABLE_cdp_neighbor_detail_info']['ROW_cdp_neighbor_detail_info']
+        'TABLE_cdp_neighbor_detail_info']['ROW_cdp_neighbor_detail_info']
 except:
     print('No CDP neighbors found.')
     exit()
@@ -41,19 +41,15 @@ for entry in cdp:
     i += 1
     interface = entry['intf_id']
     cdp_dict[interface, i] = {}
-
     # Strip fat from local interface, add to dict.
     local_intf = re.sub(r'(Eth|mgmt)[^\d]*([\d/]+)', r'\1\2', entry['intf_id'])
     cdp_dict[interface, i]['local_intf'] = local_intf
-
     # Strip fat from neighbor hostname, add to dict.
     neighbor = re.split(r'[\.(]', entry['device_id'])[0]
     cdp_dict[interface, i]['neighbor'] = neighbor
-
     # Strip fat from neighbor interface, add to dict.
     neighbor_intf = re.sub(r'^(.{3})[^\d]*([\d/]+)', r'\1 \2', entry['port_id'])
     cdp_dict[interface, i]['neighbor_intf'] = neighbor_intf
-
     # Add neighbor IP address to dict.
     try:
         neighbor_ip = entry['v4mgmtaddr']
@@ -82,6 +78,10 @@ if natsorted_avail:
         print('%-8s -> %-20s %-12s %s' %
               (value['local_intf'], value['neighbor'], value['neighbor_intf'], value['neighbor_ip']))
 else:
-    for key, value in cdp_dict.items():
+    sorted_neighbors = sorted(cdp_dict.keys())
+    for nei in sorted_neighbors:
         print('%-8s -> %-20s %-12s %s' %
-              (value['local_intf'], value['neighbor'], value['neighbor_intf'], value['neighbor_ip']))
+              (cdp_dict[nei]['local_intf'],
+               cdp_dict[nei]['neighbor'],
+               cdp_dict[nei]['neighbor_intf'],
+               cdp_dict[nei]['neighbor_ip']))
