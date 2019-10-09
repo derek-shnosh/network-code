@@ -57,7 +57,7 @@ for entry in cdp:
         try:
             neighbor_ip = entry['v4addr']
         except:
-            pass
+            neighbor_ip = ''
     if neighbor_ip == '0.0.0.0' or neighbor_ip == '':
         cdp_dict[interface, i]['neighbor_ip'] = '--'
     else:
