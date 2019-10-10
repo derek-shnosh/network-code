@@ -65,9 +65,9 @@ for entry in cdp:
         if v4addr != '' and v4mgmtaddr != '':
             ip_addr = '%s, %s' % (v4addr, v4mgmtaddr)
         elif v4addr != '' and v4mgmtaddr == '':
-            ip_addr = '%s' & v4addr
+            ip_addr = '%s' % v4addr
         elif v4mgmtaddr != '' and v4addr == '':
-            ip_addr = '%s' & v4mgmtaddr
+            ip_addr = '%s' % v4mgmtaddr
         cdp_dict[interface, i]['neighbor_ip'] = ip_addr
 
 # Print header and custom CDP neighbor brief table.
