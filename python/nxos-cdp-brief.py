@@ -52,16 +52,23 @@ for entry in cdp:
     cdp_dict[interface, i]['neighbor_intf'] = neighbor_intf
     # Add neighbor IP address to dict.
     try:
-        neighbor_ip = entry['v4mgmtaddr']
+        v4addr = entry['v4addr']
     except:
-        try:
-            neighbor_ip = entry['v4addr']
-        except:
-            neighbor_ip = ''
-    if neighbor_ip == '0.0.0.0' or neighbor_ip == '':
+        v4addr = ''
+    try:
+        v4mgmtaddr = entry['v4mgmtaddr']
+    except:
+        v4mgmtaddr = ''
+    if v4addr == '' and v4mgmtaddr == '':
         cdp_dict[interface, i]['neighbor_ip'] = '--'
     else:
-        cdp_dict[interface, i]['neighbor_ip'] = neighbor_ip
+        if v4addr != '' and v4mgmtaddr != '':
+            ip_addr = '%s, %s' % (v4addr, v4mgmtaddr)
+        elif v4addr != '' and v4mgmtaddr == '':
+            ip_addr = '%s' & v4addr
+        elif v4mgmtaddr != '' and v4addr == '':
+            ip_addr = '%s' & v4mgmtaddr
+        cdp_dict[interface, i]['neighbor_ip'] = ip_addr
 
 # Print header and custom CDP neighbor brief table.
 print('''CDP brief prints useful CDP neighbor information.
@@ -72,7 +79,7 @@ print('''CDP brief prints useful CDP neighbor information.
 'N-Intf' denotes neighbor interface.
 
 %-8s -> %-20s %-12s %s\n%s''' %
-      ('L-Intf', 'Neighbor', 'N-Intf', 'IP Address', '-'*60))
+      ('L-Intf', 'Neighbor', 'N-Intf', 'IP Address(es)', '-'*70))
 
 if natsorted_avail:
     for key, value in natsorted(cdp_dict.items()):
