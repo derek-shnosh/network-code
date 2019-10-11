@@ -52,23 +52,15 @@ for entry in cdp:
     cdp_dict[interface, i]['neighbor_intf'] = neighbor_intf
     # Add neighbor IP address to dict.
     try:
-        v4addr = entry['v4addr']
+        addr = entry['v4addr']
     except:
-        v4addr = ''
+        addr = None
+    cdp_dict[interface, i]['neighbor_addr'] = addr or '--'
     try:
-        v4mgmtaddr = entry['v4mgmtaddr']
+        mgmtaddr = entry['v4mgmtaddr']
     except:
-        v4mgmtaddr = ''
-    if v4addr == '' and v4mgmtaddr == '':
-        cdp_dict[interface, i]['neighbor_ip'] = '--'
-    else:
-        if v4addr != '' and v4mgmtaddr != '':
-            ip_addr = '%s, %s' % (v4addr, v4mgmtaddr)
-        elif v4addr != '' and v4mgmtaddr == '':
-            ip_addr = '%s' % v4addr
-        elif v4mgmtaddr != '' and v4addr == '':
-            ip_addr = '%s' % v4mgmtaddr
-        cdp_dict[interface, i]['neighbor_ip'] = ip_addr
+        mgmtaddr = None
+    cdp_dict[interface, i]['neighbor_mgmtaddr'] = mgmtaddr or '--'
 
 # Print header and custom CDP neighbor brief table.
 print('''CDP brief prints useful CDP neighbor information.
@@ -78,21 +70,23 @@ print('''CDP brief prints useful CDP neighbor information.
 'L-Intf' denotes local interface.
 'N-Intf' denotes neighbor interface.
 
-%-8s -> %-20s %-12s %s\n%s''' %
-      ('L-Intf', 'Neighbor', 'N-Intf', 'IP Address(es)', '-'*70))
+%-8s -> %-20s %-14s %-16s %-16s\n%s''' %
+      ('L-Intf', 'Neighbor', 'N-Intf', 'IP Addr', 'Mgmt Addr', '-'*80))
 
 if natsorted_avail:
     for key, value in natsorted(cdp_dict.items()):
-        print('%-8s -> %-20s %-12s %s' %
+        print('%-8s -> %-20s %-14s %-16s %-16s' %
               (value['local_intf'],
                value['neighbor'],
                value['neighbor_intf'],
-               value['neighbor_ip']))
+               value['neighbor_addr'],
+               value['neighbor_mgmtaddr']))
 else:
     sorted_neighbors = sorted(cdp_dict.keys())
     for nei in sorted_neighbors:
-        print('%-8s -> %-20s %-12s %s' %
+        print('%-8s -> %-20s %-14s %-16s %-16s' %
               (cdp_dict[nei]['local_intf'],
                cdp_dict[nei]['neighbor'],
                cdp_dict[nei]['neighbor_intf'],
-               cdp_dict[nei]['neighbor_ip']))
+               cdp_dict[nei]['neighbor_ip'],
+               cdp_dict[nei]['neighbor_mgmtaddr']))
