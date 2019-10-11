@@ -24,6 +24,7 @@ cdp = []
 cdp_dict = {}
 i = 0
 
+# Check for CDP neighbors.
 try:
     return_data = json.loads(clid('show cdp neighbor detail'))[
         'TABLE_cdp_neighbor_detail_info']['ROW_cdp_neighbor_detail_info']
@@ -31,12 +32,14 @@ except:
     print('No CDP neighbors found.')
     exit()
 
+# If more than one neighbor exists, a dict is built; otherwise a list is made.
 if isinstance(return_data, dict):
     cdp.append(return_data)
 elif isinstance(return_data, list):
     for item in return_data:
         cdp.append(item)
 
+# Parse information from each CDP neighbor.
 for entry in cdp:
     i += 1
     interface = entry['intf_id']
@@ -50,7 +53,7 @@ for entry in cdp:
     # Strip fat from neighbor interface, add to dict.
     neighbor_intf = re.sub(r'^(.{3})[^\d]*([\d/]+)', r'\1 \2', entry['port_id'])
     cdp_dict[interface, i]['neighbor_intf'] = neighbor_intf
-    # Add neighbor IP address to dict.
+    # Add neighbor IP address(es) to dict.
     try:
         addr = entry['v4addr']
     except:
