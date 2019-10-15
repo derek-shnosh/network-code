@@ -88,5 +88,5 @@ else:
               (cdp_dict[nei]['local_intf'],
                cdp_dict[nei]['neighbor'],
                cdp_dict[nei]['neighbor_intf'],
-               cdp_dict[nei]['neighbor_ip'],
+               cdp_dict[nei]['neighbor_addr'],
                cdp_dict[nei]['neighbor_mgmtaddr']))
