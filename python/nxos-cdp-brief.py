@@ -62,6 +62,8 @@ for entry in cdp:
         addr = entry['v4addr']
         if addr == mgmtaddr:
             addr = '(--)'
+        elif addr == '0.0.0.0':
+            addr = '--'
     except:
         addr = None
     cdp_dict[interface, i]['neighbor_mgmtaddr'] = mgmtaddr or '--'
