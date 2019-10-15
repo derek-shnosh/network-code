@@ -55,15 +55,17 @@ for entry in cdp:
     cdp_dict[interface, i]['neighbor_intf'] = neighbor_intf
     # Add neighbor IP address(es) to dict.
     try:
-        addr = entry['v4addr']
-    except:
-        addr = None
-    cdp_dict[interface, i]['neighbor_addr'] = addr or '--'
-    try:
         mgmtaddr = entry['v4mgmtaddr']
     except:
         mgmtaddr = None
+    try:
+        addr = entry['v4addr']
+        if addr == mgmtaddr:
+            addr = '--'
+    except:
+        addr = None
     cdp_dict[interface, i]['neighbor_mgmtaddr'] = mgmtaddr or '--'
+    cdp_dict[interface, i]['neighbor_addr'] = addr or '--'
 
 # Print header and custom CDP neighbor brief table.
 print('''CDP brief prints useful CDP neighbor information.
@@ -74,7 +76,7 @@ print('''CDP brief prints useful CDP neighbor information.
 'N-Intf' denotes neighbor interface.
 
 %-8s -> %-20s %-14s %-16s %-16s\n%s''' %
-      ('L-Intf', 'Neighbor', 'N-Intf', 'IP Addr', 'Mgmt Addr', '-'*80))
+      ('L-Intf', 'Neighbor', 'N-Intf', 'Mgmt-IPv4-Addr', 'IPv4-Addr', '-'*80))
 
 if natsorted_avail:
     for key, value in natsorted(cdp_dict.items()):
@@ -82,8 +84,8 @@ if natsorted_avail:
               (value['local_intf'],
                value['neighbor'],
                value['neighbor_intf'],
-               value['neighbor_addr'],
-               value['neighbor_mgmtaddr']))
+               value['neighbor_mgmtaddr'],
+               value['neighbor_addr']))
 else:
     sorted_neighbors = sorted(cdp_dict.keys())
     for nei in sorted_neighbors:
@@ -91,5 +93,5 @@ else:
               (cdp_dict[nei]['local_intf'],
                cdp_dict[nei]['neighbor'],
                cdp_dict[nei]['neighbor_intf'],
-               cdp_dict[nei]['neighbor_addr'],
-               cdp_dict[nei]['neighbor_mgmtaddr']))
+               cdp_dict[nei]['neighbor_mgmtaddr'],
+               cdp_dict[nei]['neighbor_addr']))
