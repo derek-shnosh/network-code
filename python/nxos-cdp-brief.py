@@ -69,10 +69,11 @@ for entry in cdp:
     cdp_dict[interface, i]['neighbor_addr'] = addr or '--'
 
 # Print header and custom CDP neighbor brief table.
-print('''CDP brief for %s neighbors discovered.
+print('''CDP brief prints useful CDP neighbor information.
 
-* Use `| grep` to filter output.
+Neighbors parsed: %s
 
+* Use `grep` to filter output.
 'L-Intf' denotes local interface.
 'N-Intf' denotes neighbor interface.
 
