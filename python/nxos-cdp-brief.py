@@ -20,10 +20,6 @@ try:
 except ImportError:
     natsorted_avail = False
 
-cdp = []
-cdp_dict = {}
-i = 0
-
 # Check for CDP neighbors.
 try:
     return_data = json.loads(clid('show cdp neighbor detail'))[
@@ -32,6 +28,7 @@ except:
     print('No CDP neighbors found.')
     exit()
 
+cdp = []
 # If more than one neighbor exists, a dict is built; otherwise a list is made.
 if isinstance(return_data, dict):
     cdp.append(return_data)
@@ -39,6 +36,8 @@ elif isinstance(return_data, list):
     for item in return_data:
         cdp.append(item)
 
+i = 0
+cdp_dict = {}
 # Parse information from each CDP neighbor.
 for entry in cdp:
     i += 1
@@ -70,7 +69,7 @@ for entry in cdp:
     cdp_dict[interface, i]['neighbor_addr'] = addr or '--'
 
 # Print header and custom CDP neighbor brief table.
-print('''CDP brief prints useful CDP neighbor information.
+print('''CDP brief for %s neighbors discovered.
 
 * Use `| grep` to filter output.
 
@@ -78,7 +77,7 @@ print('''CDP brief prints useful CDP neighbor information.
 'N-Intf' denotes neighbor interface.
 
 %-8s -> %-20s %-14s %-16s %-16s\n%s''' %
-      ('L-Intf', 'Neighbor', 'N-Intf', 'Mgmt-IPv4-Addr', 'IPv4-Addr', '-'*80))
+      (i, 'L-Intf', 'Neighbor', 'N-Intf', 'Mgmt-IPv4-Addr', 'IPv4-Addr', '-'*80))
 
 if natsorted_avail:
     for key, value in natsorted(cdp_dict.items()):
