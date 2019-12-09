@@ -73,7 +73,7 @@ print('''CDP brief prints useful CDP neighbor information.
 
 Neighbors parsed: %s
 
-* Use `grep` to filter output.
+* Use `grep` to filter output (N9K only).
 'L-Intf' denotes local interface.
 'N-Intf' denotes neighbor interface.
 
