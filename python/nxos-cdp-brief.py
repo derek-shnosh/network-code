@@ -52,7 +52,11 @@ for entry in cdp:
     # Strip fat from neighbor interface, add to dict.
     neighbor_intf = re.sub(r'^(.{3})[^\d]*([\d/]+)', r'\1 \2', entry['port_id'])
     cdp_dict[interface, i]['neighbor_intf'] = neighbor_intf
-    neighbor_ver = re.sub(r'.*?Version:* ([^ ,\n]*).*', r'\1', entry['version'], flags=re.DOTALL)
+    version = entry['version']
+    if 'CCM' in version:
+        neighbor_ver = re.sub(r'.*?CCM:(.*)', r'\1', version)
+    else:
+        neighbor_ver = re.sub(r'.*?version:* ([^ ,\n]*).*', r'\1', version, flags=re.DOTALL|re.IGNORECASE)
     cdp_dict[interface, i]['neighbor_ver'] = neighbor_ver
     # Add neighbor IP address(es) to dict.
     try:
