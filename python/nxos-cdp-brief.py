@@ -52,6 +52,8 @@ for entry in cdp:
     # Strip fat from neighbor interface, add to dict.
     neighbor_intf = re.sub(r'^(.{3})[^\d]*([\d/]+)', r'\1 \2', entry['port_id'])
     cdp_dict[interface, i]['neighbor_intf'] = neighbor_intf
+    neighbor_ver = re.sub(r'.*?Version:* ([^ ,\n]*).*', r'\1', entry['version'], flags=re.DOTALL)
+    cdp_dict[interface, i]['neighbor_ver'] = neighbor_ver
     # Add neighbor IP address(es) to dict.
     try:
         mgmtaddr = entry['v4mgmtaddr']
@@ -77,23 +79,25 @@ Neighbors parsed: %s
 'L-Intf' denotes local interface.
 'N-Intf' denotes neighbor interface.
 
-%-8s -> %-20s %-14s %-16s %-16s\n%s''' %
-      (i, 'L-Intf', 'Neighbor', 'N-Intf', 'Mgmt-IPv4-Addr', 'IPv4-Addr', '-'*80))
+%-8s -> %-20s %-14s %-16s %-16s %s\n%s''' %
+      (i, 'L-Intf', 'Neighbor', 'N-Intf', 'Mgmt-IPv4-Addr', 'IPv4-Addr', 'Version', '-'*95))
 
 if natsorted_avail:
     for key, value in natsorted(cdp_dict.items()):
-        print('%-8s -> %-20s %-14s %-16s %-16s' %
+        print('%-8s -> %-20s %-14s %-16s %-16s %s' %
               (value['local_intf'],
                value['neighbor'],
                value['neighbor_intf'],
                value['neighbor_mgmtaddr'],
-               value['neighbor_addr']))
+               value['neighbor_addr'],
+               value['neighbor_ver']))
 else:
     sorted_neighbors = sorted(cdp_dict.keys())
     for nei in sorted_neighbors:
-        print('%-8s -> %-20s %-14s %-16s %-16s' %
+        print('%-8s -> %-20s %-14s %-16s %-16s %s' %
               (cdp_dict[nei]['local_intf'],
                cdp_dict[nei]['neighbor'],
                cdp_dict[nei]['neighbor_intf'],
                cdp_dict[nei]['neighbor_mgmtaddr'],
-               cdp_dict[nei]['neighbor_addr']))
+               cdp_dict[nei]['neighbor_addr'],
+               cdp_dict[nei]['neighbor_ver']))
