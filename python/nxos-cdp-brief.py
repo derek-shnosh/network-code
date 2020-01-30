@@ -10,9 +10,15 @@
 #    - Without guestshell: `cli alias name cdpbr python /bootflash/scripts/nxos-cdp-brief.py`
 # 5. Type `cdpbr` in NX-OS CLI to output a useful CDP brief table.
 
+import argparse
 import json
 import re
 from cli import clid
+
+parser = argparse.ArgumentParser('NXOS CDP Brief.')
+parser.add_argument(
+    '-v', '--version', action='store_true', help='Include neighbor version in printout.')
+args = parser.parse_args()
 
 try:
     from natsort import natsorted
@@ -52,6 +58,7 @@ for entry in cdp:
     # Strip fat from neighbor interface, add to dict.
     neighbor_intf = re.sub(r'^(.{3})[^\d]*([\d/]+)', r'\1 \2', entry['port_id'])
     cdp_dict[interface, i]['neighbor_intf'] = neighbor_intf
+    # Strip fat from neighor version, add to dict.
     version = entry['version']
     if 'CCM' in version:
         neighbor_ver = re.sub(r'.*?CCM:(.*)', r'\1', version)
@@ -74,6 +81,7 @@ for entry in cdp:
     cdp_dict[interface, i]['neighbor_mgmtaddr'] = mgmtaddr or '--'
     cdp_dict[interface, i]['neighbor_addr'] = addr or '--'
 
+
 # Print header and custom CDP neighbor brief table.
 print('''CDP brief prints useful CDP neighbor information.
 
@@ -81,27 +89,49 @@ Neighbors parsed: %s
 
 * Use `grep` to filter output (N9K only).
 'L-Intf' denotes local interface.
-'N-Intf' denotes neighbor interface.
+'N-Intf' denotes neighbor interface.\n\n''' % i)
 
-%-8s -> %-20s %-14s %-16s %-16s %s\n%s''' %
-      (i, 'L-Intf', 'Neighbor', 'N-Intf', 'Mgmt-IPv4-Addr', 'IPv4-Addr', 'Version', '-'*95))
+if args.version:
+    print('%-8s -> %-20s %-14s %-16s %-16s %s\n%s' %
+        ('L-Intf', 'Neighbor', 'N-Intf', 'Mgmt-IPv4-Addr', 'IPv4-Addr', 'Version', '-'*95))
 
-if natsorted_avail:
-    for key, value in natsorted(cdp_dict.items()):
-        print('%-8s -> %-20s %-14s %-16s %-16s %s' %
-              (value['local_intf'],
-               value['neighbor'],
-               value['neighbor_intf'],
-               value['neighbor_mgmtaddr'],
-               value['neighbor_addr'],
-               value['neighbor_ver']))
+    if natsorted_avail:
+        for key, value in natsorted(cdp_dict.items()):
+            print('%-8s -> %-20s %-14s %-16s %-16s %s' %
+                (value['local_intf'],
+                value['neighbor'],
+                value['neighbor_intf'],
+                value['neighbor_mgmtaddr'],
+                value['neighbor_addr'],
+                value['neighbor_ver']))
+    else:
+        sorted_neighbors = sorted(cdp_dict.keys())
+        for nei in sorted_neighbors:
+            print('%-8s -> %-20s %-14s %-16s %-16s %s' %
+                (cdp_dict[nei]['local_intf'],
+                cdp_dict[nei]['neighbor'],
+                cdp_dict[nei]['neighbor_intf'],
+                cdp_dict[nei]['neighbor_mgmtaddr'],
+                cdp_dict[nei]['neighbor_addr'],
+                cdp_dict[nei]['neighbor_ver']))
 else:
-    sorted_neighbors = sorted(cdp_dict.keys())
-    for nei in sorted_neighbors:
-        print('%-8s -> %-20s %-14s %-16s %-16s %s' %
-              (cdp_dict[nei]['local_intf'],
-               cdp_dict[nei]['neighbor'],
-               cdp_dict[nei]['neighbor_intf'],
-               cdp_dict[nei]['neighbor_mgmtaddr'],
-               cdp_dict[nei]['neighbor_addr'],
-               cdp_dict[nei]['neighbor_ver']))
+    print('%-8s -> %-20s %-14s %-16s %-16s\n%s' %
+        ('L-Intf', 'Neighbor', 'N-Intf', 'Mgmt-IPv4-Addr', 'IPv4-Addr', '-'*80))
+
+    if natsorted_avail:
+        for key, value in natsorted(cdp_dict.items()):
+            print('%-8s -> %-20s %-14s %-16s %-16s' %
+                (value['local_intf'],
+                value['neighbor'],
+                value['neighbor_intf'],
+                value['neighbor_mgmtaddr'],
+                value['neighbor_addr']))
+    else:
+        sorted_neighbors = sorted(cdp_dict.keys())
+        for nei in sorted_neighbors:
+            print('%-8s -> %-20s %-14s %-16s %-16s' %
+                (cdp_dict[nei]['local_intf'],
+                cdp_dict[nei]['neighbor'],
+                cdp_dict[nei]['neighbor_intf'],
+                cdp_dict[nei]['neighbor_mgmtaddr'],
+                cdp_dict[nei]['neighbor_addr']))
