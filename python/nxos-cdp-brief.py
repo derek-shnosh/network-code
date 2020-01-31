@@ -19,6 +19,7 @@ parser = argparse.ArgumentParser('NXOS CDP Brief.')
 parser.add_argument(
     '-v', '--version', action='store_true', help='Include neighbor version in printout.')
 args = parser.parse_args()
+include_ver = args.version
 
 try:
     from natsort import natsorted
@@ -60,11 +61,12 @@ for entry in cdp:
     cdp_dict[interface, i]['neighbor_intf'] = neighbor_intf
     # Strip fat from neighor version, add to dict.
     version = entry['version']
-    if 'CCM' in version:
-        neighbor_ver = re.sub(r'.*?CCM:(.*)', r'\1', version)
-    else:
-        neighbor_ver = re.sub(r'.*?version:* ([^ ,\n]*).*', r'\1', version, flags=re.DOTALL|re.IGNORECASE)
-    cdp_dict[interface, i]['neighbor_ver'] = neighbor_ver
+    if include_ver:
+        if 'CCM' in version:
+            neighbor_ver = re.sub(r'.*?CCM:(.*)', r'\1', version)
+        else:
+            neighbor_ver = re.sub(r'.*?version:* ([^ ,\n]*).*', r'\1', version, flags=re.DOTALL|re.IGNORECASE)
+        cdp_dict[interface, i]['neighbor_ver'] = neighbor_ver
     # Add neighbor IP address(es) to dict.
     try:
         mgmtaddr = entry['v4mgmtaddr']
@@ -91,47 +93,28 @@ Neighbors parsed: %s
 'L-Intf' denotes local interface.
 'N-Intf' denotes neighbor interface.\n\n''' % i)
 
-if args.version:
-    print('%-8s -> %-20s %-14s %-16s %-16s %s\n%s' %
-        ('L-Intf', 'Neighbor', 'N-Intf', 'Mgmt-IPv4-Addr', 'IPv4-Addr', 'Version', '-'*95))
+row_format = '%-8s -> %-20s %-14s %-16s %-16s %s'
+version_header = 'Version' if include_ver else ''
+dash_count = 95 if include_ver else 80
+print(row_format % ('L-Intf', 'Neighbor', 'N-Intf', 'Mgmt-IPv4-Addr', 'IPv4-Addr', version_header))
+print('-'*dash_count)
 
-    if natsorted_avail:
-        for key, value in natsorted(cdp_dict.items()):
-            print('%-8s -> %-20s %-14s %-16s %-16s %s' %
-                (value['local_intf'],
-                value['neighbor'],
-                value['neighbor_intf'],
-                value['neighbor_mgmtaddr'],
-                value['neighbor_addr'],
-                value['neighbor_ver']))
-    else:
-        sorted_neighbors = sorted(cdp_dict.keys())
-        for nei in sorted_neighbors:
-            print('%-8s -> %-20s %-14s %-16s %-16s %s' %
-                (cdp_dict[nei]['local_intf'],
-                cdp_dict[nei]['neighbor'],
-                cdp_dict[nei]['neighbor_intf'],
-                cdp_dict[nei]['neighbor_mgmtaddr'],
-                cdp_dict[nei]['neighbor_addr'],
-                cdp_dict[nei]['neighbor_ver']))
+if natsorted_avail:
+    for key, value in natsorted(cdp_dict.items()):
+        print(row_format %
+            (value['local_intf'],
+            value['neighbor'],
+            value['neighbor_intf'],
+            value['neighbor_mgmtaddr'],
+            value['neighbor_addr'],
+            value['neighbor_ver'] if args.version else ''))
 else:
-    print('%-8s -> %-20s %-14s %-16s %-16s\n%s' %
-        ('L-Intf', 'Neighbor', 'N-Intf', 'Mgmt-IPv4-Addr', 'IPv4-Addr', '-'*80))
-
-    if natsorted_avail:
-        for key, value in natsorted(cdp_dict.items()):
-            print('%-8s -> %-20s %-14s %-16s %-16s' %
-                (value['local_intf'],
-                value['neighbor'],
-                value['neighbor_intf'],
-                value['neighbor_mgmtaddr'],
-                value['neighbor_addr']))
-    else:
-        sorted_neighbors = sorted(cdp_dict.keys())
-        for nei in sorted_neighbors:
-            print('%-8s -> %-20s %-14s %-16s %-16s' %
-                (cdp_dict[nei]['local_intf'],
-                cdp_dict[nei]['neighbor'],
-                cdp_dict[nei]['neighbor_intf'],
-                cdp_dict[nei]['neighbor_mgmtaddr'],
-                cdp_dict[nei]['neighbor_addr']))
+    sorted_neighbors = sorted(cdp_dict.keys())
+    for nei in sorted_neighbors:
+        print(row_format %
+            (cdp_dict[nei]['local_intf'],
+            cdp_dict[nei]['neighbor'],
+            cdp_dict[nei]['neighbor_intf'],
+            cdp_dict[nei]['neighbor_mgmtaddr'],
+            cdp_dict[nei]['neighbor_addr'],
+            cdp_dict[nei]['neighbor_ver'] if args.version else ''))
