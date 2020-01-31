@@ -60,10 +60,10 @@ for entry in cdp:
     neighbor_intf = re.sub(r'^(.{3})[^\d]*([\d/]+)', r'\1 \2', entry['port_id'])
     cdp_dict[interface, i]['neighbor_intf'] = neighbor_intf
     # Strip fat from neighor version, add to dict.
-    version = entry['version']
     if include_ver:
+        version = entry['version']
         if 'CCM' in version:
-            neighbor_ver = re.sub(r'.*?CCM:(.*)', r'\1', version)
+            neighbor_ver = re.sub(r'.*?CCM:([^ ,\n]*)', r'\1', version)
         else:
             neighbor_ver = re.sub(r'.*?version:* ([^ ,\n]*).*', r'\1', version, flags=re.DOTALL|re.IGNORECASE)
         cdp_dict[interface, i]['neighbor_ver'] = neighbor_ver
@@ -94,9 +94,9 @@ Neighbors parsed: %s
 'N-Intf' denotes neighbor interface.\n\n''' % i)
 
 row_format = '%-8s -> %-20s %-14s %-16s %-16s %s'
-version_header = 'Version' if include_ver else ''
+header_row = ('L-Intf', 'Neighbor', 'N-Intf', 'Mgmt-IPv4-Addr', 'IPv4-Addr', 'Version' if include_ver else '')
 dash_count = 95 if include_ver else 80
-print(row_format % ('L-Intf', 'Neighbor', 'N-Intf', 'Mgmt-IPv4-Addr', 'IPv4-Addr', version_header))
+print(row_format % header_row)
 print('-'*dash_count)
 
 if natsorted_avail:
