@@ -61,11 +61,12 @@ for entry in cdp:
     cdp_dict[interface, i]['neighbor_intf'] = neighbor_intf
     # Strip fat from neighor version, add to dict.
     if include_ver:
-        version = entry['version']
-        if 'CCM' in version:
-            neighbor_ver = re.sub(r'.*?CCM:([^ ,\n]*)', r'\1', version)
+        if 'CCM' in entry['version']:
+            neighbor_ver = re.sub(
+                r'.*?CCM:([^ ,\n]*)', r'\1', entry['version'])
         else:
-            neighbor_ver = re.sub(r'.*?version:* ([^ ,\n]*).*', r'\1', version, flags=re.DOTALL|re.IGNORECASE)
+            neighbor_ver = re.sub(
+                r'.*?version:* ([^ ,\n]*).*', r'\1', entry['version'], flags=re.DOTALL | re.IGNORECASE)
         cdp_dict[interface, i]['neighbor_ver'] = neighbor_ver
     # Add neighbor IP address(es) to dict.
     try:
@@ -94,7 +95,12 @@ Neighbors parsed: %s
 'N-Intf' denotes neighbor interface.\n\n''' % i)
 
 row_format = '%-8s -> %-20s %-14s %-16s %-16s %s'
-header_row = ('L-Intf', 'Neighbor', 'N-Intf', 'Mgmt-IPv4-Addr', 'IPv4-Addr', 'Version' if include_ver else '')
+header_row = ('L-Intf',
+              'Neighbor',
+              'N-Intf',
+              'Mgmt-IPv4-Addr',
+              'IPv4-Addr', 
+              'Version' if include_ver else '')
 dash_count = 95 if include_ver else 80
 print(row_format % header_row)
 print('-'*dash_count)
@@ -107,7 +113,7 @@ if natsorted_avail:
             value['neighbor_intf'],
             value['neighbor_mgmtaddr'],
             value['neighbor_addr'],
-            value['neighbor_ver'] if args.version else ''))
+            value['neighbor_ver'] if include_ver else ''))
 else:
     sorted_neighbors = sorted(cdp_dict.keys())
     for nei in sorted_neighbors:
@@ -117,4 +123,4 @@ else:
             cdp_dict[nei]['neighbor_intf'],
             cdp_dict[nei]['neighbor_mgmtaddr'],
             cdp_dict[nei]['neighbor_addr'],
-            cdp_dict[nei]['neighbor_ver'] if args.version else ''))
+            cdp_dict[nei]['neighbor_ver'] if include_ver else ''))
