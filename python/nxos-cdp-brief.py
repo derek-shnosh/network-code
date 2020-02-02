@@ -62,8 +62,7 @@ for entry in cdp:
     # Strip fat from neighor version, add to dict.
     if include_ver:
         if 'CCM' in entry['version']:
-            neighbor_ver = re.sub(
-                r'.*?CCM:([^ ,\n]*)', r'\1', entry['version'])
+            neighbor_ver = re.sub(r'.*?CCM:([^ ,\n]*)', r'\1', entry['version'])
         else:
             neighbor_ver = re.sub(
                 r'.*?version:* ([^ ,\n]*).*', r'\1', entry['version'], flags=re.DOTALL | re.IGNORECASE)
