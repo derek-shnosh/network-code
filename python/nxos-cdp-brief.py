@@ -93,7 +93,7 @@ Neighbors parsed: %s
 'L-Intf' denotes local interface.
 'N-Intf' denotes neighbor interface.\n\n''' % i)
 
-row_format = '%-8s -> %-20s %-14s %-16s %-16s %s'
+row_format = '%-8s -> %-22s %-14s %-16s %-16s %s'
 header_row = ('L-Intf',
               'Neighbor',
               'N-Intf',
