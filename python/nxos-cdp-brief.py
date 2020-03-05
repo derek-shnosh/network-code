@@ -15,8 +15,8 @@ import json
 import re
 from cli import clid
 
-parser = argparse.ArgumentParser('\n\nNXOS CDP Brief.',
-    description='Options to print version or platform cannot be used simultaneously.')
+parser = argparse.ArgumentParser(
+    '\n\nNXOS CDP Brief.', description='Options to print version or platform cannot be used simultaneously.')
 parser.add_argument(
     '-v', '--version', action='store_true', help='Include neighbor version in printout.',)
 parser.add_argument(
@@ -120,19 +120,19 @@ print('-'*dash_count)
 if natsorted_avail:
     for key, value in natsorted(cdp_dict.items()):
         print(row_format %
-            (value['local_intf'],
-            value['neighbor'],
-            value['neighbor_intf'],
-            value['neighbor_mgmtaddr'],
-            value['neighbor_addr'],
-            value['neighbor_ver'] if include_ver else value['neighbor_plat'] if include_plat else ''))
+              (value['local_intf'],
+               value['neighbor'],
+               value['neighbor_intf'],
+               value['neighbor_mgmtaddr'],
+               value['neighbor_addr'],
+               value['neighbor_ver'] if include_ver else value['neighbor_plat'] if include_plat else ''))
 else:
     sorted_neighbors = sorted(cdp_dict.keys())
     for nei in sorted_neighbors:
         print(row_format %
-            (cdp_dict[nei]['local_intf'],
-            cdp_dict[nei]['neighbor'],
-            cdp_dict[nei]['neighbor_intf'],
-            cdp_dict[nei]['neighbor_mgmtaddr'],
-            cdp_dict[nei]['neighbor_addr'],
-            cdp_dict[nei]['neighbor_ver'] if include_ver else cdp_dict[nei]['neighbor_plat'] if include_plat else ''))
+              (cdp_dict[nei]['local_intf'],
+               cdp_dict[nei]['neighbor'],
+               cdp_dict[nei]['neighbor_intf'],
+               cdp_dict[nei]['neighbor_mgmtaddr'],
+               cdp_dict[nei]['neighbor_addr'],
+               cdp_dict[nei]['neighbor_ver'] if include_ver else cdp_dict[nei]['neighbor_plat'] if include_plat else ''))
