@@ -95,9 +95,14 @@ for entry in cdp:
 # Print header and custom CDP neighbor brief table.
 print('''CDP brief prints useful CDP neighbor information.
 
+-v will include neighbor version information.
+-p will include neighbor platform information.
+
+* Options to print version or platform cannot be used simultaneously.
+* Use `grep` to filter output (N9K only).
+
 Neighbors parsed: %s
 
-* Use `grep` to filter output (N9K only).
 'L-Intf' denotes local interface.
 'N-Intf' denotes neighbor interface.\n\n''' % i)
 
