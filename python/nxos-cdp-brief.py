@@ -73,7 +73,8 @@ for entry in cdp:
         cdp_dict[interface, i]['neighbor_ver'] = neighbor_ver
     # Get neighbor platform, add to dict.
     if include_plat:
-        cdp_dict[interface, i]['neighbor_plat'] = entry['platform_id']
+        neighbor_plat = entry['platform_id'].strip('cisco ')
+        cdp_dict[interface, i]['neighbor_plat'] = neighbor_plat
     # Add neighbor IP address(es) to dict.
     try:
         mgmtaddr = entry['v4mgmtaddr']
