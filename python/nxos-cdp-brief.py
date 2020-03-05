@@ -20,7 +20,7 @@ parser = argparse.ArgumentParser('\n\nNXOS CDP Brief.',
 parser.add_argument(
     '-v', '--version', action='store_true', help='Include neighbor version in printout.',)
 parser.add_argument(
-    '-p', '--platform', action='store_true', help='Includde neighbor platform in printout.')
+    '-p', '--platform', action='store_true', help='Include neighbor platform in printout.')
 args = parser.parse_args()
 include_ver = args.version
 include_plat = args.platform
