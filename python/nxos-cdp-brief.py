@@ -15,11 +15,15 @@ import json
 import re
 from cli import clid
 
-parser = argparse.ArgumentParser('NXOS CDP Brief.')
+parser = argparse.ArgumentParser('\n\nNXOS CDP Brief.',
+    description='Options to print version or platform cannot be used simultaneously.')
 parser.add_argument(
-    '-v', '--version', action='store_true', help='Include neighbor version in printout.')
+    '-v', '--version', action='store_true', help='Include neighbor version in printout.',)
+parser.add_argument(
+    '-p', '--platform', action='store_true', help='Includde neighbor platform in printout.')
 args = parser.parse_args()
 include_ver = args.version
+include_plat = args.platform
 
 try:
     from natsort import natsorted
@@ -67,6 +71,9 @@ for entry in cdp:
             neighbor_ver = re.sub(
                 r'.*?version:* ([^ ,\n]*).*', r'\1', entry['version'], flags=re.DOTALL | re.IGNORECASE)
         cdp_dict[interface, i]['neighbor_ver'] = neighbor_ver
+    # Get neighbor platform, add to dict.
+    if include_plat:
+        cdp_dict[interface, i]['neighbor_plat'] = entry['platform_id']
     # Add neighbor IP address(es) to dict.
     try:
         mgmtaddr = entry['v4mgmtaddr']
@@ -99,8 +106,8 @@ header_row = ('L-Intf',
               'N-Intf',
               'Mgmt-IPv4-Addr',
               'IPv4-Addr', 
-              'Version' if include_ver else '')
-dash_count = 95 if include_ver else 80
+              'Version' if include_ver else 'Platform' if include_plat else '')
+dash_count = 95 if include_ver or include_plat else 80
 print(row_format % header_row)
 print('-'*dash_count)
 
@@ -112,7 +119,7 @@ if natsorted_avail:
             value['neighbor_intf'],
             value['neighbor_mgmtaddr'],
             value['neighbor_addr'],
-            value['neighbor_ver'] if include_ver else ''))
+            value['neighbor_ver'] if include_ver else value['neighbor_plat'] if include_plat else ''))
 else:
     sorted_neighbors = sorted(cdp_dict.keys())
     for nei in sorted_neighbors:
@@ -122,4 +129,4 @@ else:
             cdp_dict[nei]['neighbor_intf'],
             cdp_dict[nei]['neighbor_mgmtaddr'],
             cdp_dict[nei]['neighbor_addr'],
-            cdp_dict[nei]['neighbor_ver'] if include_ver else ''))
+            cdp_dict[nei]['neighbor_ver'] if include_ver else cdp_dict[nei]['neighbor_plat'] if include_plat else ''))
