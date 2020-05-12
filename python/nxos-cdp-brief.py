@@ -16,7 +16,7 @@ import re
 from cli import clid
 
 parser = argparse.ArgumentParser(
-    '\n\nNXOS CDP Brief.', description='Options to print version or platform cannot be used simultaneously.')
+    '\n\nNXOS CDP Brief.', description='Using -p and -v args simultaneously requires extra terminal width; try "terminal width 511".')
 parser.add_argument(
     '-v', '--version', action='store_true', help='Include neighbor version in printout.',)
 parser.add_argument(
@@ -91,7 +91,6 @@ for entry in cdp:
     cdp_dict[interface, i]['neighbor_mgmtaddr'] = mgmtaddr or '--'
     cdp_dict[interface, i]['neighbor_addr'] = addr or '--'
 
-
 # Print header and custom CDP neighbor brief table.
 print('''CDP brief prints useful CDP neighbor information.
 
@@ -106,33 +105,41 @@ Neighbors parsed: %s
 'L-Intf' denotes local interface.
 'N-Intf' denotes neighbor interface.\n\n''' % i)
 
-row_format = '%-8s -> %-22s %-14s %-16s %-16s %s'
-header_row = ('L-Intf',
-              'Neighbor',
-              'N-Intf',
-              'Mgmt-IPv4-Addr',
-              'IPv4-Addr', 
-              'Version' if include_ver else 'Platform' if include_plat else '')
-dash_count = 95 if include_ver or include_plat else 80
+row_format = '%-8s -> %-22s %-14s %-16s %-16s %-20s %-20s'
+header_row = ('L-Intf', 'Neighbor', 'N-Intf', 'Mgmt-IPv4-Addr', 'IPv4-Addr')
+if include_plat and include_ver:
+    header_row = header_row + ('Platform', 'Version')
+    dash_count = 115
+elif include_plat and not include_ver:
+    header_row = header_row + ('Platform', '')
+    dash_count = 95
+elif include_ver and not include_plat:
+    header_row = header_row + ('Version', '')
+    dash_count = 95
+else:
+    header_row = header_row + ('', '')
+    dash_count = 80
+
 print(row_format % header_row)
 print('-'*dash_count)
 
 if natsorted_avail:
-    for key, value in natsorted(cdp_dict.items()):
-        print(row_format %
-              (value['local_intf'],
-               value['neighbor'],
-               value['neighbor_intf'],
-               value['neighbor_mgmtaddr'],
-               value['neighbor_addr'],
-               value['neighbor_ver'] if include_ver else value['neighbor_plat'] if include_plat else ''))
+    sorted_neighbors = natsorted(cdp_dict.items())
 else:
-    sorted_neighbors = sorted(cdp_dict.keys())
-    for nei in sorted_neighbors:
-        print(row_format %
-              (cdp_dict[nei]['local_intf'],
-               cdp_dict[nei]['neighbor'],
-               cdp_dict[nei]['neighbor_intf'],
-               cdp_dict[nei]['neighbor_mgmtaddr'],
-               cdp_dict[nei]['neighbor_addr'],
-               cdp_dict[nei]['neighbor_ver'] if include_ver else cdp_dict[nei]['neighbor_plat'] if include_plat else ''))
+    sorted_neighbors = sorted(cdp_dict.items())    
+
+for key, value in sorted_neighbors:
+    curr_nei = (value['local_intf'],
+                value['neighbor'],
+                value['neighbor_intf'],
+                value['neighbor_mgmtaddr'],
+                value['neighbor_addr'])
+    if include_plat and include_ver:
+        curr_nei = curr_nei + (value['neighbor_plat'], value['neighbor_ver'])
+    elif include_plat and not include_ver:
+        curr_nei = curr_nei + (value['neighbor_plat'], '')
+    elif include_ver and not include_plat:
+        curr_nei = curr_nei + (value['neighbor_ver'], '')
+    else:
+        curr_nei = curr_nei + ('', '')
+    print(row_format % curr_nei)
