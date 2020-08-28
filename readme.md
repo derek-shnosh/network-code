@@ -10,9 +10,9 @@ Miscellaneous code primarily used in my role as a network engineer.
 
 Script to run *on* an NX-OS device to print a custom CDP neighbor brief table. 
 One line is printed per CDP neighbor, containing the following information; 
-**Local interface**, **Neighbor hostname**, **interface**, **IP address** (mgmt preferred), and **version***.
+**Local interface**, **Neighbor hostname**, **interface**, **IP address** (mgmt preferred), **platform**, and **version***.
 
-_*Use the args `-v` or `-p` to print the CDP table **with** version or platform information, respectively. There may be some regex parsing issues, has only been validated against most Cisco equipment and some ESXi builds._
+_*Use the args `-p` or `-v` to print the CDP table **with** platform or version information, respectively. There may be some regex parsing issues, has only been validated against most Cisco equipment and some ESXi builds._
 
 ![cdp-brief-screenshot](assets/nxos-cdp-brief.png)
 
