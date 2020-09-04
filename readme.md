@@ -8,13 +8,15 @@ Miscellaneous code primarily used in my role as a network engineer.
 
 ## `nxos-cdp-brief.py`
 
-I wanted a way to print a _CDP brief_ on NXOS switches to list each neighbor's local interface, neighbor interface, hostname, and IP addresses (mgmt or otherwise). `nxos-cdp-brief.py` is a script to run *on* an NX-OS device to print a custom CDP neighbor brief table.
+`nxos-cdp-brief.py` is a script to run *on* an NX-OS device to print a custom CDP neighbor brief table.
+
+I wanted a way to print a _CDP brief_ while working on NXOS switches, to include each neighbor's **Local interface** along with the **Neighbor hostname**, **interface**, **IP address** (mgmt preferred), and optionally their **platform** and/or **version**.
 
 The script _will_ account for interfaces with multiple neighbors; this is useful when a downstream switch might transparently pass CDP information from subsequent switches, or when ESXi vSwitches are passing CDP info for guest VMs.
 
 The script will attempt to import and use the `natsort` module to naturally sort the neighbors by interface, in ascending order. If `natsort` is not available, the results will still be sorted lexicographically (see the [`natsort` PyPI page](https://pypi.org/project/natsort/) for elaboration).
 
-One line is printed per CDP neighbor, containing the **Local interface**, **Neighbor hostname**, **interface**, **IP address** (mgmt preferred), **platform**, and **version*** (reference the screenshot below);
+One line is printed per CDP neighbor, containing the following information (reference the screenshot below);
 
 _*(Optionally), use the args `-p` or `-v` to print the CDP table **with** platform or version information, respectively. There may be some regex parsing issues, has only been validated against most Cisco equipment and some ESXi builds._
 
