@@ -8,7 +8,7 @@ Miscellaneous code primarily used in my role as a network engineer.
 
 ## `nxos-cdp-brief.py`
 
-Script to run *on* an NX-OS device to print a custom CDP neighbor brief table. 
+I wanted a way to print a CDP brief on NXOS switches to list each neighbor's local interface, neighbor interface, hostname, and IP addresses (mgmt or otherwise). `nxos-cdp-brief.py` is a script to run *on* an NX-OS device to print a custom CDP neighbor brief table. 
 One line is printed per CDP neighbor, containing the following information; 
 **Local interface**, **Neighbor hostname**, **interface**, **IP address** (mgmt preferred), **platform**, and **version***.
 
