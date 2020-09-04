@@ -24,7 +24,7 @@ _*(Optionally), use the args `-p` or `-v` to print the CDP table **with** platfo
 | `Neighbor`        | The neighbor's hostname.                                                                        |
 | `N-Intf`          | The neighbor's interface that connects to _ours_.                                               |
 | `Mgmt-IPv4-Addr`  | The neighbor's Mgmt IPv4 address.                                                               |
-| IPv4-Addr         | The neighbor's _highest_ valued IP address, only shown if this differs from the Mgmt-IPv4-Addr. |
+| `IPv4-Addr`       | The neighbor's _highest_ valued IP address, only shown if this differs from the Mgmt-IPv4-Addr. |
 | (`Platform`) `-p` | The neighbor's platform, or model, information.                                                 |
 | (`Version`) `-v`  | The neighbor's software/firmware version.                                                       |
 
