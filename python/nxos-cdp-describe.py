@@ -53,7 +53,11 @@ if intf == 'all':
         # Strip fat from neighbor hostname, add to dict.
         neighbor = re.split(r'[\.(]', entry['device_id'])[0]
         # Strip fat from neighbor interface, add to dict.
-        neighbor_intf = re.split(r"\D+(.*)$", entry['port_id'])[1]
+        neighbor_intf = entry['port_id']
+        if "Ethernet" in neighbor_intf:
+            neighbor_intf = re.split(r"\D+(.*)$", neighbor_intf)[1]
+        else:
+            neighbor_intf = re.sub(r'^(.{3})[^\d]*([\d/]+)', r'\1\2', neighbor_intf)
         new_desc = '%s:%s' % (neighbor, neighbor_intf)
 
         # Prompt to set the local interface's description, if needed.
