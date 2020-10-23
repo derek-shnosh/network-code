@@ -55,7 +55,7 @@ if intf == 'all':
         # Strip fat from neighbor interface, add to dict.
         neighbor_intf = entry['port_id']
         if "Ethernet" in neighbor_intf:
-            neighbor_intf = re.split(r"\D+(.*)$", neighbor_intf)[1]
+            neighbor_intf = re.sub(r"\D+(.*)$", r'\1', neighbor_intf)
         else:
             neighbor_intf = re.sub(r'^(.{3})[^\d]*([\d/]+)', r'\1\2', neighbor_intf)
         new_desc = '%s:%s' % (neighbor, neighbor_intf)
