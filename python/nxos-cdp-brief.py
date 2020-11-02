@@ -104,19 +104,21 @@ Neighbors parsed: %s
 'L-Intf' denotes local interface.
 'N-Intf' denotes neighbor interface.\n\n''' % i)
 
-row_format = '%-8s -> %-22s %-14s %-16s %-16s %-20s %-20s'
+row_format = '%-8s -> %-22s %-14s %-16s %-16s'
 header_row = ('L-Intf', 'Neighbor', 'N-Intf', 'Mgmt-IPv4-Addr', 'IPv4-Addr')
 if include_plat and include_ver:
+    row_format = row_format + ' %-20s %-20s'
     header_row = header_row + ('Platform', 'Version')
     dash_count = 115
 elif include_plat and not include_ver:
-    header_row = header_row + ('Platform', '')
+    row_format = row_format + ' %-20s'
+    header_row = header_row + ('Platform',)
     dash_count = 95
 elif include_ver and not include_plat:
-    header_row = header_row + ('Version', '')
+    row_format = row_format + ' %-20s'
+    header_row = header_row + ('Version',)
     dash_count = 95
 else:
-    header_row = header_row + ('', '')
     dash_count = 80
 
 print(row_format % header_row)
@@ -136,9 +138,7 @@ for key, value in sorted_neighbors:
     if include_plat and include_ver:
         curr_nei = curr_nei + (value['neighbor_plat'], value['neighbor_ver'])
     elif include_plat and not include_ver:
-        curr_nei = curr_nei + (value['neighbor_plat'], '')
+        curr_nei = curr_nei + (value['neighbor_plat'],)
     elif include_ver and not include_plat:
-        curr_nei = curr_nei + (value['neighbor_ver'], '')
-    else:
-        curr_nei = curr_nei + ('', '')
+        curr_nei = curr_nei + (value['neighbor_ver'],)
     print(row_format % curr_nei)
