@@ -23,7 +23,7 @@ if intf == 'all':
     signal.signal(signal.SIGINT, signal_handler)
     signal.pause
 
-    print('intf "all" chosen, checking all CDP neighbors; press `ctrl+c` to interrupt.')
+    print('Checking all interfaces for CDP neighbors, press `ctrl+c` to interrupt.')
 
     # Load all CDP neighbor information.
     try:
