@@ -33,7 +33,8 @@ except ImportError:
 
 # Check for CDP neighbors.
 try:
-    return_data = json.loads(clid('show cdp neighbor detail'))[
+    return_data = clid('show cdp neighbor detail')
+    json_data = json.loads(return_data)[
         'TABLE_cdp_neighbor_detail_info']['ROW_cdp_neighbor_detail_info']
 except:
     print('No CDP neighbors found.')
@@ -41,10 +42,10 @@ except:
 
 cdp = []
 # If more than one neighbor exists, a dict is built; otherwise a list is made.
-if isinstance(return_data, dict):
-    cdp.append(return_data)
-elif isinstance(return_data, list):
-    for item in return_data:
+if isinstance(json_data, dict):
+    cdp.append(json_data)
+elif isinstance(json_data, list):
+    for item in json_data:
         cdp.append(item)
 
 i = 0
