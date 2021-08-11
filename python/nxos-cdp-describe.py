@@ -49,7 +49,10 @@ if intf == 'all':
         i += 1
         interface = entry['intf_id']
         curr_desc = cli.cli('show run interf %s | inc desc' % interface)
-        curr_desc = re.split(r'description (\S*)', curr_desc)[1]
+        if 'description' in curr_desc:
+            curr_desc = re.split(r'description (\S*)', curr_desc)[1]
+        else:
+            curr_desc = '<none>'
         # Strip fat from neighbor hostname, add to dict.
         neighbor = re.split(r'[\.(]', entry['device_id'])[0]
         # Strip fat from neighbor interface, add to dict.
