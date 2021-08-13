@@ -1,5 +1,5 @@
 #!/bin/env python
-# Author: DS, Synergy Information Solutions, Inc.
+# Author: DS, shnosh.io
 
 # 1. Enable guestshell on the NX-OS device.
 # 2. Install the natsort python module via guestshell;

@@ -1,5 +1,5 @@
 #!/bin/env python
-# Author: DS, Synergy Information Solutions, Inc.
+# Author: DS, shnosh.io
 
 import argparse
 import cli
