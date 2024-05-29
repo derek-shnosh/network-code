@@ -12,6 +12,10 @@ parser.add_argument(
 args = parser.parse_args()
 intf = args.interface
 
+# Accommodate Python2 on older guestshells.
+if hasattr(__builtins__, 'raw_input'):
+    input = raw_input
+
 if intf == 'all':
     # Keyboard interrupt handler source: https://stackoverflow.com/a/1112350
     import signal
@@ -68,7 +72,7 @@ if intf == 'all':
             print('Interface %s description already matches CDP neighbor (%s).' %
                   (interface, curr_desc))
         else:
-            q = raw_input('Update description on %s to "%s" (Currently: "%s")?  [y/n] ' % (
+            q = input('Update description on %s to "%s" (Currently: "%s")?  [y/n] ' % (
                 interface, new_desc, curr_desc))
             if q == 'y':
                 cli.cli('conf t ; interface %s ; description %s' %
