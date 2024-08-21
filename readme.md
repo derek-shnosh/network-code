@@ -1,3 +1,9 @@
+# ARCHIVED 2024/8/21
+
+## Moved to new repo for rename: [nxos-cdp-helpers](https://github.com/derek-shnosh/nxos-cdp-helpers)
+
+***
+
 [![published](https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-published.svg)](https://developer.cisco.com/codeexchange/github/repo/derek-shnosh/network-code)
 
 # Network Code
